@@ -1,38 +1,93 @@
-<h1>Bugers!</h1>
+<div class="container">
+<div class="header">
+<img src="/assets/img/burger.png" height="147" width="200">
 
-<h2>Cats that are not sleepy!</h2>
+<h1>Eat-Da-Buger!</h1>
+</div>
+<ul class="lc">
+  {{#each burgers}}
+    {{#unless devoured}}
+      <li>
+      {{burgers}}
+            
+      <textarea rows="3" cols="30">{{this.id}}. {{this.burger_name}}</textarea>
 
-<ul>
-  {{#each cats}}
-    {{#unless sleepy}}
-      {{> cats/cat-block sleep=true}}
+      <button class="change-devour" data-burgerid="{{id}}" data-newdevour="true">Devour It!</button>
+      </li>
     {{/unless}}
   {{/each}}
 </ul>
 
-<h2>Cats that are sleepy!</h2>
-
-<ul>
-  {{#each cats}}
-    {{#if sleepy}}
-      {{> cats/cat-block sleep=false}}
+<ul class="rc">
+  {{#each burgers}}
+    {{#if devoured}}
+      <li>
+        <textarea rows="2" cols="40" disabled>{{this.id}}. {{this.burger_name}}</textarea>
+      </li>
+      
     {{/if}}
   {{/each}}
 </ul>
-
-<h2>Add a Cat</h2>
+<div class="foot">
 <form class="create-form">
 
   <div class="form-group">
-    <label for="ca">Cat Name:</label>
-    <input type="text" id="ca" name="name">
+    <textarea type="text" id="bur" name="burger_name"></textarea>
   </div>
 
-  <div class="form-group">
-    <label for="slee">Sleepy?</label><br>
-    <input type="radio" name="sleepy" value="1" checked> Sleepy!<br>
-    <input type="radio" name="sleepy" value="0"> Awake
-  </div>
+  <button type="submit">Submit</button>
 
-  <button type="submit">Add Cat</button>
 </form>
+
+<h4>Enter a burger you want to eat Click the "Submit" button</h4>
+</div>
+</div>
+
+<script>
+  // Make sure we wait to attach our handlers until the DOM is fully loaded.
+$(function() {
+  $(".change-devour").on("click", function(event) {
+    
+    var id = $(this).data("burgerid");
+    var newDevoured = $(this).data("newdevour");
+    console.log("newDevoured: ", newDevoured);
+    var newDevouredState = {
+      devoured: newDevoured
+    };
+
+    // Send the PUT request.
+    $.ajax("/api/burgers/" + id, {
+      type: "PUT",
+      data: newDevouredState
+    }).then(
+      function() {
+        console.log("changed devoured to", newDevoured);
+        // Reload the page to get the updated list
+        location.reload();
+      }
+    );
+  });
+
+  $(".create-form").on("submit", function(event) {
+    // Make sure to preventDefault on a submit event.
+    event.preventDefault();
+
+    var newBurg = {
+      burger_name: $("#bur").val().trim(),
+    };
+
+    // Send the POST request.
+    $.ajax("/api/burgers", {
+      type: "POST",
+      data: newBurg
+    }).then(
+      function() {
+        console.log("created new burger");
+        // Reload the page to get the updated list
+        location.reload();
+      }
+    );
+  });
+});
+
+</script>

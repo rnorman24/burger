@@ -1,0 +1,33 @@
+
+.container {
+  height: 100%;
+  display: grid;
+  grid-gap: 3px;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto;
+  grid-template-areas:
+    "h h"
+    "l r"
+    "f f";
+}
+
+.header {
+  grid-area: h;
+}
+
+.lc {
+  grid-area: l;
+}
+
+.rc {
+  grid-area: r;
+}
+
+.foot {
+  grid-area: f;
+}
+
+ul {
+  padding: 0;
+  list-style-type: none;
+}
